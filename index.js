@@ -6,15 +6,16 @@ require("dotenv").config();
 const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectId;
 
+// Middleware 
 app.use(cors());
 app.use(express.json());
 
+// Connecting MongoDB database 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2efaz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-console.log(uri);
 
 async function run() {
     
@@ -30,11 +31,12 @@ async function run() {
           const allFoods = await cursor.toArray();
           res.send(allFoods);
         });
+      
         // Add a Food 
         app.post("/foods", async (req, res) => {
           const food = req.body;
           console.log("hit the post api", food);
-          const result = await carCollection.insertOne(allFoods);
+          const result = await foodCollection.insertOne(food);
           console.log(result);
           res.json(result);
         });
