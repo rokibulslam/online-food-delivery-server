@@ -17,9 +17,11 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
+// API 
 async function run() {
     
-    try {
+  try { 
+      // Creating Collection at MongoDB
         await client.connect();
         console.log("server connected");
         const database = client.db("hungry");
@@ -49,6 +51,7 @@ async function run() {
 
 run().catch(console.dir);
 
+// Checking server 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
