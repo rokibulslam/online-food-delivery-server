@@ -33,7 +33,18 @@ async function run() {
           const allFoods = await cursor.toArray();
           res.send(allFoods);
         });
-      
+        // Get purchase item from all foods
+        app.get("/foods/:id", async (req, res) => {
+          const id = req.params.id;
+          console.log(id)
+          const query = {
+            _id: ObjectId(id)
+          }
+          const product = await foodCollection.findOne(query)
+          console.log(product)
+          res.json(product)
+        });    
+    
         // Add a Food 
         app.post("/foods", async (req, res) => {
           const food = req.body;
