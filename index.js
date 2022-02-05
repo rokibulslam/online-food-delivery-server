@@ -71,6 +71,13 @@ async function run() {
       );
       res.send(result);
     });
+    // Delete a Food Item 
+    app.delete("/foods/delete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await foodCollection.deleteOne(query);
+      res.json(result);
+    });
     // Delete Orderd Item by ID
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
