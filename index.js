@@ -27,7 +27,7 @@ async function run() {
     const database = client.db("hungry");
     const foodCollection = database.collection("allFoods");
     const orderCollection = database.collection("orders");
-    const userCollection = database.collection("users")
+    const userCollection = database.collection("users");
 
     // Find all Foods
     app.get("/foods", async (req, res) => {
@@ -63,7 +63,7 @@ async function run() {
       console.log(result);
       res.json(result);
     });
-    // Update Ordered Product's status 
+    // Update Ordered Product's status
     app.put("/status/:id", async (req, res) => {
       const id = req.params.id;
       const updateInfo = req.body;
@@ -73,7 +73,7 @@ async function run() {
       );
       res.send(result);
     });
-    // Delete a Food Item 
+    // Delete a Food Item
     app.delete("/foods/delete/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -97,8 +97,8 @@ async function run() {
       res.json(result);
     });
     // *******User Section********
-    // Get saved User from database 
-    app.get('/users/:email', async (req, res) => {
+    // Get saved User from database
+    app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
       const user = await userCollection.findOne(query);
@@ -107,37 +107,40 @@ async function run() {
         isAdmin = true;
       }
       res.json({ admin: isAdmin });
-    })
-    // save new user to database 
-    app.post('/users', async (req, res) => {
+    });
+    // save new user to database
+    app.post("/users", async (req, res) => {
       const user = req.body;
-      console.log(user)
-      const result = await userCollection.insertOne(user)
+      console.log(user);
+      const result = await userCollection.insertOne(user);
       console.log(result);
-      res.json(result)
-    })
+      res.json(result);
+    });
     // check google user and update/add user to database
-    app.put('/users', async (req, res) => {
+    app.put("/users", async (req, res) => {
       const user = req.body;
-      console.log(user)
+      console.log(user);
       const checkUser = { email: user.email };
       const option = { upsert: true };
       const updateUser = { $set: user };
-      console.log(updateUser)
-      const result = await userCollection.updateOne(checkUser, updateUser, option);
-      console.log(result)
+      console.log(updateUser);
+      const result = await userCollection.updateOne(
+        checkUser,
+        updateUser,
+        option
+      );
       res.json(result);
     });
-    // Make Admin 
-    app.put('/users/admin', async (req, res) => {
+    // Make Admin
+    app.put("/users/admin", async (req, res) => {
       const user = req.body;
       const filter = { email: user.email };
-      const updateUserRole = { $set: { role: 'admin' } }
+      const updateUserRole = { $set: { role: "admin" } };
       const result = await userCollection.updateOne(filter, updateUserRole);
-      console.log(result)
-      res.json(result)
-    })
-
+      console.log(result);
+      res.json(result);
+    });
+  
     // Add Order
     app.post("/orders", async (req, res) => {
       const order = req.body;
