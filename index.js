@@ -4,6 +4,7 @@ const port = process.env.PORT || 5000;
 const cors = require("cors");
 require("dotenv").config();
 const { MongoClient } = require("mongodb");
+const res = require("express/lib/response");
 const ObjectId = require("mongodb").ObjectId;
 
 // Middleware
@@ -26,6 +27,7 @@ async function run() {
     const database = client.db("hungry");
     const foodCollection = database.collection("allFoods");
     const orderCollection = database.collection("orders");
+    const userCollection = database.collection("users")
 
     // Find all Foods
     app.get("/foods", async (req, res) => {
@@ -92,6 +94,30 @@ async function run() {
       console.log("hit the post api", food);
       const result = await foodCollection.insertOne(food);
       console.log(result);
+      res.json(result);
+    });
+    // *******User Section********
+    // Get saved User from database 
+    app.get('/users', async (req, res) => {
+      const cursor = userCollection.find({});
+      const users = await cursor.toArray();
+      res.json(users);
+    })
+    // save new user to database 
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user)
+      console.log(user);
+      res.json(user)
+    })
+    // check google user and update/add user to database
+    app.put('/users', async (req, res) => {
+      const user = req.body;
+      const checkUser = { email: user.email };
+      const option = { upsert: true };
+      const updateUser = { $set: user };
+      const result = await userCollection.updateOne(checkUser, updateUser, option);
+      console.log(result)
       res.json(result);
     });
 
