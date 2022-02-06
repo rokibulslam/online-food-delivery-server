@@ -28,7 +28,7 @@ async function run() {
     const foodCollection = database.collection("allFoods");
     const orderCollection = database.collection("orders");
     const userCollection = database.collection("users");
-
+    const reviewCollection = database.collection("reviews")
     // Find all Foods
     app.get("/foods", async (req, res) => {
       const cursor = foodCollection.find({});
@@ -140,12 +140,26 @@ async function run() {
       console.log(result);
       res.json(result);
     });
-  
+
     // Add Order
     app.post("/orders", async (req, res) => {
       const order = req.body;
       console.log("hit the post api", order);
       const result = await orderCollection.insertOne(order);
+      console.log(result);
+      res.json(result);
+    });
+    // Get Review 
+    app.get("/reviews", async (req, res) => {
+      const cursor = reviewCollection.find({});
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+    // Add Review 
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      console.log("hit the orders");
+      const result = await reviewCollection.insertOne(review);
       console.log(result);
       res.json(result);
     });
