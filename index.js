@@ -98,28 +98,45 @@ async function run() {
     });
     // *******User Section********
     // Get saved User from database 
-    app.get('/users', async (req, res) => {
-      const cursor = userCollection.find({});
-      const users = await cursor.toArray();
-      res.json(users);
+    app.get('/users/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      let isAdmin = false;
+      if (user?.role === "admin") {
+        isAdmin = true;
+      }
+      res.json({ admin: isAdmin });
     })
     // save new user to database 
     app.post('/users', async (req, res) => {
       const user = req.body;
+      console.log(user)
       const result = await userCollection.insertOne(user)
-      console.log(user);
-      res.json(user)
+      console.log(result);
+      res.json(result)
     })
     // check google user and update/add user to database
     app.put('/users', async (req, res) => {
       const user = req.body;
+      console.log(user)
       const checkUser = { email: user.email };
       const option = { upsert: true };
       const updateUser = { $set: user };
+      console.log(updateUser)
       const result = await userCollection.updateOne(checkUser, updateUser, option);
       console.log(result)
       res.json(result);
     });
+    // Make Admin 
+    app.put('/users/admin', async (req, res) => {
+      const user = req.body;
+      const filter = { email: user.email };
+      const updateUserRole = { $set: { role: 'admin' } }
+      const result = await userCollection.updateOne(filter, updateUserRole);
+      console.log(result)
+      res.json(result)
+    })
 
     // Add Order
     app.post("/orders", async (req, res) => {
